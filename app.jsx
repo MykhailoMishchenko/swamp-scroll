@@ -89,30 +89,19 @@ const PEEK_SPOTS = [
   { edge: "bottom", pos: 82, rot: -10, scale: 0.9 }
 ];
 
-function OgreSilhouette({ size = 120, src, imgPos = "center top", imgScale = 1 }) {
+function OgreSilhouette({ size = 120, src }) {
   return (
-    <div style={{
-      width: size, height: size,
-      borderRadius: "50%",
-      overflow: "hidden",
-      border: "3px solid #4d6b2a",
-      boxShadow: "0 8px 16px rgba(0,0,0,.7), 0 0 28px rgba(77,107,42,.6)",
-      background: "#2b3d18",
-    }}>
-      <img
-        src={src}
-        alt=""
-        style={{
-          width: `${imgScale * 100}%`,
-          height: `${imgScale * 100}%`,
-          objectFit: "cover",
-          objectPosition: imgPos,
-          marginLeft: imgScale > 1 ? `${-((imgScale - 1) * 50)}%` : 0,
-          marginTop: imgScale > 1 ? `${-((imgScale - 1) * 20)}%` : 0,
-          mixBlendMode: "multiply",
-        }}
-      />
-    </div>
+    <img
+      src={src}
+      alt=""
+      style={{
+        width: size,
+        height: size,
+        objectFit: "contain",
+        mixBlendMode: "multiply",
+        filter: "drop-shadow(0 8px 16px rgba(0,0,0,.7))",
+      }}
+    />
   );
 }
 
