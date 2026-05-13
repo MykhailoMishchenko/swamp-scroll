@@ -16,10 +16,10 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 // ============================================================
 // pos: objectPosition to crop to face; scale: zoom factor for full-body shots
 const SHREK_IMAGES = [
-  { src: "shrek1.png",  pos: "50% 12%", scale: 2.2 },  // full body — zoom 2.2x to face
-  { src: "shrek2.png",  pos: "center top", scale: 1 },
-  { src: "shrek3.png",  pos: "center top", scale: 1 },
-  { src: "shrek4.png",  pos: "center top", scale: 1 },
+  { src: "shrek1.png", size: 200 },  // full body — show entire Shrek
+  { src: "shrek2.png", size: 130 },
+  { src: "shrek3.png", size: 130 },
+  { src: "shrek4.png", size: 130 },
 ];
 
 // ============================================================
@@ -142,9 +142,10 @@ function OgrePeek({ screen }) {
   }, [screen]);
 
   const spot = PEEK_SPOTS[spotIdx];
+  const imgSize = SHREK_IMAGES[imgIdx].size;
 
-  // Full circle visible inside screen when shown; hidden fully behind edge
-  const W = 120, H = 120, PAD = 16;
+  // Full image visible inside screen when shown; hidden fully behind edge
+  const W = imgSize, H = imgSize, PAD = 16;
   let style = {
     "--rot": `${spot.rot}deg`,
     "--scale": spot.scale,
@@ -175,10 +176,8 @@ function OgrePeek({ screen }) {
     >
       <div className="ogre-bob">
         <OgreSilhouette
-          size={120}
+          size={SHREK_IMAGES[imgIdx].size}
           src={SHREK_IMAGES[imgIdx].src}
-          imgPos={SHREK_IMAGES[imgIdx].pos}
-          imgScale={SHREK_IMAGES[imgIdx].scale}
         />
       </div>
     </div>
