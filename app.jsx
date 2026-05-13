@@ -14,7 +14,13 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 // ============================================================
 // SHREK IMAGES — random per peek
 // ============================================================
-const SHREK_IMAGES = ["shrek1.png", "shrek2.jpeg", "shrek3.png", "shrek4.png"];
+// pos: objectPosition to crop to face; scale: zoom factor for full-body shots
+const SHREK_IMAGES = [
+  { src: "shrek1.png",  pos: "50% 12%", scale: 2.2 },  // full body — zoom 2.2x to face
+  { src: "shrek2.jpeg", pos: "center top", scale: 1 },
+  { src: "shrek3.png",  pos: "center top", scale: 1 },
+  { src: "shrek4.png",  pos: "center top", scale: 1 },
+];
 
 // ============================================================
 // CONSTANTS
@@ -83,7 +89,7 @@ const PEEK_SPOTS = [
   { edge: "bottom", pos: 82, rot: -10, scale: 0.9 }
 ];
 
-function OgreSilhouette({ size = 120, src }) {
+function OgreSilhouette({ size = 120, src, imgPos = "center top", imgScale = 1 }) {
   return (
     <div style={{
       width: size, height: size,
@@ -96,7 +102,14 @@ function OgreSilhouette({ size = 120, src }) {
       <img
         src={src}
         alt=""
-        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
+        style={{
+          width: `${imgScale * 100}%`,
+          height: `${imgScale * 100}%`,
+          objectFit: "cover",
+          objectPosition: imgPos,
+          marginLeft: imgScale > 1 ? `${-((imgScale - 1) * 50)}%` : 0,
+          marginTop: imgScale > 1 ? `${-((imgScale - 1) * 20)}%` : 0,
+        }}
       />
     </div>
   );
@@ -140,28 +153,28 @@ function OgrePeek({ screen }) {
 
   const spot = PEEK_SPOTS[spotIdx];
 
-  // Fixed px offsets — % would resolve to 0 on a width:0 anchor element
-  const W = 120, H = 132;
+  // Full circle visible inside screen when shown; hidden fully behind edge
+  const W = 120, H = 120, PAD = 16;
   let style = {
     "--rot": `${spot.rot}deg`,
     "--scale": spot.scale,
   };
   if (spot.edge === "left") {
     style.left = 0; style.top = `${spot.pos}%`;
-    style["--hidden-x"] = `${-W}px`;       style["--hidden-y"] = `${-H / 2}px`;
-    style["--shown-x"]  = `${-W * 0.55}px`; style["--shown-y"]  = `${-H / 2}px`;
+    style["--hidden-x"] = `${-(W + PAD)}px`; style["--hidden-y"] = `${-H / 2}px`;
+    style["--shown-x"]  = `${PAD}px`;         style["--shown-y"]  = `${-H / 2}px`;
   } else if (spot.edge === "right") {
     style.right = 0; style.top = `${spot.pos}%`;
-    style["--hidden-x"] = `0px`;            style["--hidden-y"] = `${-H / 2}px`;
-    style["--shown-x"]  = `${-W * 0.55}px`; style["--shown-y"]  = `${-H / 2}px`;
+    style["--hidden-x"] = `${PAD}px`;           style["--hidden-y"] = `${-H / 2}px`;
+    style["--shown-x"]  = `${-(W + PAD)}px`;    style["--shown-y"]  = `${-H / 2}px`;
   } else if (spot.edge === "top") {
     style.top = 0; style.left = `${spot.pos}%`;
-    style["--hidden-x"] = `${-W / 2}px`;   style["--hidden-y"] = `${-H}px`;
-    style["--shown-x"]  = `${-W / 2}px`;   style["--shown-y"]  = `${-H * 0.55}px`;
+    style["--hidden-x"] = `${-W / 2}px`;   style["--hidden-y"] = `${-(H + PAD)}px`;
+    style["--shown-x"]  = `${-W / 2}px`;   style["--shown-y"]  = `${PAD}px`;
   } else { // bottom
     style.bottom = 0; style.left = `${spot.pos}%`;
-    style["--hidden-x"] = `${-W / 2}px`;   style["--hidden-y"] = `${H}px`;
-    style["--shown-x"]  = `${-W / 2}px`;   style["--shown-y"]  = `${H * 0.55}px`;
+    style["--hidden-x"] = `${-W / 2}px`;   style["--hidden-y"] = `${PAD}px`;
+    style["--shown-x"]  = `${-W / 2}px`;   style["--shown-y"]  = `${-(H + PAD)}px`;
   }
 
   return (
@@ -171,7 +184,12 @@ function OgrePeek({ screen }) {
       aria-hidden="true"
     >
       <div className="ogre-bob">
-        <OgreSilhouette size={120} src={SHREK_IMAGES[imgIdx]} />
+        <OgreSilhouette
+          size={120}
+          src={SHREK_IMAGES[imgIdx].src}
+          imgPos={SHREK_IMAGES[imgIdx].pos}
+          imgScale={SHREK_IMAGES[imgIdx].scale}
+        />
       </div>
     </div>
   );
