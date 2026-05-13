@@ -17,7 +17,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 // pos: objectPosition to crop to face; scale: zoom factor for full-body shots
 const SHREK_IMAGES = [
   { src: "shrek1.png",  pos: "50% 12%", scale: 2.2 },  // full body — zoom 2.2x to face
-  { src: "shrek2.jpeg", pos: "center top", scale: 1 },
+  { src: "shrek2.png",  pos: "center top", scale: 1 },
   { src: "shrek3.png",  pos: "center top", scale: 1 },
   { src: "shrek4.png",  pos: "center top", scale: 1 },
 ];
