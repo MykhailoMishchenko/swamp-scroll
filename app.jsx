@@ -109,6 +109,7 @@ function OgreSilhouette({ size = 120, src, imgPos = "center top", imgScale = 1 }
           objectPosition: imgPos,
           marginLeft: imgScale > 1 ? `${-((imgScale - 1) * 50)}%` : 0,
           marginTop: imgScale > 1 ? `${-((imgScale - 1) * 20)}%` : 0,
+          mixBlendMode: "multiply",
         }}
       />
     </div>
