@@ -12,6 +12,11 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 }/*EDITMODE-END*/;
 
 // ============================================================
+// SHREK IMAGES — random per peek
+// ============================================================
+const SHREK_IMAGES = ["shrek1.png", "shrek2.jpeg", "shrek3.png", "shrek4.png"];
+
+// ============================================================
 // CONSTANTS
 // ============================================================
 const RECIPIENT = "Ром4ик";
@@ -78,85 +83,22 @@ const PEEK_SPOTS = [
   { edge: "bottom", pos: 82, rot: -10, scale: 0.9 }
 ];
 
-function OgreSilhouette({ size = 120 }) {
-  const s = size / 120;
+function OgreSilhouette({ size = 120, src }) {
   return (
-    <svg
-      className="ogre-svg"
-      width={size}
-      height={size * 1.1}
-      viewBox="0 0 120 132"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <defs>
-        <radialGradient id="skinGrad" cx="38%" cy="32%" r="65%">
-          <stop offset="0%" stopColor="#b8d44a" />
-          <stop offset="45%" stopColor="#7aaa28" />
-          <stop offset="100%" stopColor="#4a7010" />
-        </radialGradient>
-        <radialGradient id="earGrad" cx="40%" cy="35%" r="65%">
-          <stop offset="0%" stopColor="#a0c840" />
-          <stop offset="100%" stopColor="#426010" />
-        </radialGradient>
-        <radialGradient id="noseGrad" cx="40%" cy="30%" r="70%">
-          <stop offset="0%" stopColor="#90b830" />
-          <stop offset="100%" stopColor="#3a5808" />
-        </radialGradient>
-        <filter id="shrekShadow">
-          <feGaussianBlur stdDeviation="2.5" />
-        </filter>
-      </defs>
-
-      {/* drop shadow */}
-      <ellipse cx="60" cy="120" rx="36" ry="5" fill="#000" opacity="0.35" filter="url(#shrekShadow)" />
-
-      {/* BIG round ears — Shrek's most iconic feature */}
-      <circle cx="14" cy="62" r="16" fill="url(#earGrad)" />
-      <circle cx="14" cy="62" r="9"  fill="#5a8818" opacity="0.5" />
-      <circle cx="106" cy="62" r="16" fill="url(#earGrad)" />
-      <circle cx="106" cy="62" r="9"  fill="#5a8818" opacity="0.5" />
-
-      {/* head — wide oval, Shrek-proportioned */}
-      <ellipse cx="60" cy="66" rx="46" ry="52" fill="url(#skinGrad)" />
-
-      {/* forehead wrinkle lines */}
-      <path d="M42,38 Q60,34 78,38" stroke="#4a7010" strokeWidth="1.8" fill="none" opacity="0.6" />
-      <path d="M46,44 Q60,40 74,44" stroke="#4a7010" strokeWidth="1.2" fill="none" opacity="0.4" />
-
-      {/* heavy brow ridge */}
-      <path d="M28,56 Q44,46 56,52" stroke="#2a4808" strokeWidth="4" fill="none" strokeLinecap="round" />
-      <path d="M92,56 Q76,46 64,52" stroke="#2a4808" strokeWidth="4" fill="none" strokeLinecap="round" />
-
-      {/* eyes — small, hooded, Shrek-squinty */}
-      <ellipse cx="46" cy="60" rx="7" ry="5.5" fill="#1a2a04" />
-      <ellipse cx="74" cy="60" rx="7" ry="5.5" fill="#1a2a04" />
-      {/* iris */}
-      <ellipse cx="46" cy="60" rx="4" ry="3.5" fill="#3d5c10" />
-      <ellipse cx="74" cy="60" rx="4" ry="3.5" fill="#3d5c10" />
-      {/* pupil */}
-      <ellipse cx="46" cy="60" rx="2" ry="2.5" fill="#0a0f02" />
-      <ellipse cx="74" cy="60" rx="2" ry="2.5" fill="#0a0f02" />
-      {/* eye shine */}
-      <circle cx="48" cy="58" r="1.2" fill="#e8f0b0" opacity="0.85" />
-      <circle cx="76" cy="58" r="1.2" fill="#e8f0b0" opacity="0.85" />
-
-      {/* wide flat Shrek nose */}
-      <ellipse cx="60" cy="78" rx="12" ry="9" fill="url(#noseGrad)" />
-      <circle cx="54" cy="80" r="4" fill="#3a5808" opacity="0.6" />
-      <circle cx="66" cy="80" r="4" fill="#3a5808" opacity="0.6" />
-      <circle cx="54" cy="79" r="2" fill="#1a2804" opacity="0.7" />
-      <circle cx="66" cy="79" r="2" fill="#1a2804" opacity="0.7" />
-
-      {/* mouth — wide grin */}
-      <path d="M38,94 Q60,108 82,94" stroke="#1a2804" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M38,94 Q60,106 82,94" stroke="#5a8010" strokeWidth="1" fill="none" opacity="0.5" />
-
-      {/* chin highlight */}
-      <ellipse cx="60" cy="108" rx="16" ry="5" fill="#a0c840" opacity="0.18" />
-
-      {/* skin texture highlights */}
-      <ellipse cx="38" cy="44" rx="10" ry="6" fill="#c8e050" opacity="0.18" transform="rotate(-15,38,44)" />
-    </svg>
+    <div style={{
+      width: size, height: size,
+      borderRadius: "50%",
+      overflow: "hidden",
+      border: "3px solid #4d6b2a",
+      boxShadow: "0 8px 16px rgba(0,0,0,.7), 0 0 28px rgba(77,107,42,.6)",
+      background: "#2b3d18",
+    }}>
+      <img
+        src={src}
+        alt=""
+        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
+      />
+    </div>
   );
 }
 
@@ -164,12 +106,14 @@ function OgrePeek({ screen }) {
   // pick a different spot index based on screen so each screen feels distinct
   const seedOffset = { intro: 0, reveal: 3, finale: 5 }[screen] ?? 0;
   const [spotIdx, setSpotIdx] = useState(seedOffset % PEEK_SPOTS.length);
+  const [imgIdx, setImgIdx] = useState(0);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     let aliveTimer, hideTimer;
 
     function cycle() {
+      setImgIdx(Math.floor(Math.random() * SHREK_IMAGES.length));
       // pick a new random spot (not same as last)
       setSpotIdx(prev => {
         let n = prev;
@@ -227,7 +171,7 @@ function OgrePeek({ screen }) {
       aria-hidden="true"
     >
       <div className="ogre-bob">
-        <OgreSilhouette size={120} />
+        <OgreSilhouette size={120} src={SHREK_IMAGES[imgIdx]} />
       </div>
     </div>
   );
