@@ -79,25 +79,84 @@ const PEEK_SPOTS = [
 ];
 
 function OgreSilhouette({ size = 120 }) {
+  const s = size / 120;
   return (
-    <div style={{
-      width: size, height: size * 1.1,
-      display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-    }}>
-      <div style={{
-        width: size, height: size,
-        borderRadius: '50%',
-        overflow: 'hidden',
-        border: '3px solid #4d6b2a',
-        boxShadow: '0 8px 16px rgba(0,0,0,.6), 0 0 24px rgba(77,107,42,.5)',
-      }}>
-        <img
-          src="https://upload.wikimedia.org/wikipedia/en/thumb/1/10/Shrek_%282001_animated_feature_film%29.jpg/220px-Shrek_%282001_animated_feature_film%29.jpg"
-          alt=""
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
-        />
-      </div>
-    </div>
+    <svg
+      className="ogre-svg"
+      width={size}
+      height={size * 1.1}
+      viewBox="0 0 120 132"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <radialGradient id="skinGrad" cx="38%" cy="32%" r="65%">
+          <stop offset="0%" stopColor="#b8d44a" />
+          <stop offset="45%" stopColor="#7aaa28" />
+          <stop offset="100%" stopColor="#4a7010" />
+        </radialGradient>
+        <radialGradient id="earGrad" cx="40%" cy="35%" r="65%">
+          <stop offset="0%" stopColor="#a0c840" />
+          <stop offset="100%" stopColor="#426010" />
+        </radialGradient>
+        <radialGradient id="noseGrad" cx="40%" cy="30%" r="70%">
+          <stop offset="0%" stopColor="#90b830" />
+          <stop offset="100%" stopColor="#3a5808" />
+        </radialGradient>
+        <filter id="shrekShadow">
+          <feGaussianBlur stdDeviation="2.5" />
+        </filter>
+      </defs>
+
+      {/* drop shadow */}
+      <ellipse cx="60" cy="120" rx="36" ry="5" fill="#000" opacity="0.35" filter="url(#shrekShadow)" />
+
+      {/* BIG round ears — Shrek's most iconic feature */}
+      <circle cx="14" cy="62" r="16" fill="url(#earGrad)" />
+      <circle cx="14" cy="62" r="9"  fill="#5a8818" opacity="0.5" />
+      <circle cx="106" cy="62" r="16" fill="url(#earGrad)" />
+      <circle cx="106" cy="62" r="9"  fill="#5a8818" opacity="0.5" />
+
+      {/* head — wide oval, Shrek-proportioned */}
+      <ellipse cx="60" cy="66" rx="46" ry="52" fill="url(#skinGrad)" />
+
+      {/* forehead wrinkle lines */}
+      <path d="M42,38 Q60,34 78,38" stroke="#4a7010" strokeWidth="1.8" fill="none" opacity="0.6" />
+      <path d="M46,44 Q60,40 74,44" stroke="#4a7010" strokeWidth="1.2" fill="none" opacity="0.4" />
+
+      {/* heavy brow ridge */}
+      <path d="M28,56 Q44,46 56,52" stroke="#2a4808" strokeWidth="4" fill="none" strokeLinecap="round" />
+      <path d="M92,56 Q76,46 64,52" stroke="#2a4808" strokeWidth="4" fill="none" strokeLinecap="round" />
+
+      {/* eyes — small, hooded, Shrek-squinty */}
+      <ellipse cx="46" cy="60" rx="7" ry="5.5" fill="#1a2a04" />
+      <ellipse cx="74" cy="60" rx="7" ry="5.5" fill="#1a2a04" />
+      {/* iris */}
+      <ellipse cx="46" cy="60" rx="4" ry="3.5" fill="#3d5c10" />
+      <ellipse cx="74" cy="60" rx="4" ry="3.5" fill="#3d5c10" />
+      {/* pupil */}
+      <ellipse cx="46" cy="60" rx="2" ry="2.5" fill="#0a0f02" />
+      <ellipse cx="74" cy="60" rx="2" ry="2.5" fill="#0a0f02" />
+      {/* eye shine */}
+      <circle cx="48" cy="58" r="1.2" fill="#e8f0b0" opacity="0.85" />
+      <circle cx="76" cy="58" r="1.2" fill="#e8f0b0" opacity="0.85" />
+
+      {/* wide flat Shrek nose */}
+      <ellipse cx="60" cy="78" rx="12" ry="9" fill="url(#noseGrad)" />
+      <circle cx="54" cy="80" r="4" fill="#3a5808" opacity="0.6" />
+      <circle cx="66" cy="80" r="4" fill="#3a5808" opacity="0.6" />
+      <circle cx="54" cy="79" r="2" fill="#1a2804" opacity="0.7" />
+      <circle cx="66" cy="79" r="2" fill="#1a2804" opacity="0.7" />
+
+      {/* mouth — wide grin */}
+      <path d="M38,94 Q60,108 82,94" stroke="#1a2804" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M38,94 Q60,106 82,94" stroke="#5a8010" strokeWidth="1" fill="none" opacity="0.5" />
+
+      {/* chin highlight */}
+      <ellipse cx="60" cy="108" rx="16" ry="5" fill="#a0c840" opacity="0.18" />
+
+      {/* skin texture highlights */}
+      <ellipse cx="38" cy="44" rx="10" ry="6" fill="#c8e050" opacity="0.18" transform="rotate(-15,38,44)" />
+    </svg>
   );
 }
 
@@ -137,27 +196,28 @@ function OgrePeek({ screen }) {
 
   const spot = PEEK_SPOTS[spotIdx];
 
-  // compute position style per edge
+  // Fixed px offsets — % would resolve to 0 on a width:0 anchor element
+  const W = 120, H = 132;
   let style = {
     "--rot": `${spot.rot}deg`,
     "--scale": spot.scale,
   };
   if (spot.edge === "left") {
     style.left = 0; style.top = `${spot.pos}%`;
-    style["--hidden-x"] = "-95%"; style["--hidden-y"] = "-50%";
-    style["--shown-x"] = "-55%";  style["--shown-y"] = "-50%";
+    style["--hidden-x"] = `${-W}px`;       style["--hidden-y"] = `${-H / 2}px`;
+    style["--shown-x"]  = `${-W * 0.55}px`; style["--shown-y"]  = `${-H / 2}px`;
   } else if (spot.edge === "right") {
     style.right = 0; style.top = `${spot.pos}%`;
-    style["--hidden-x"] = "95%";  style["--hidden-y"] = "-50%";
-    style["--shown-x"] = "55%";   style["--shown-y"] = "-50%";
+    style["--hidden-x"] = `0px`;            style["--hidden-y"] = `${-H / 2}px`;
+    style["--shown-x"]  = `${-W * 0.55}px`; style["--shown-y"]  = `${-H / 2}px`;
   } else if (spot.edge === "top") {
     style.top = 0; style.left = `${spot.pos}%`;
-    style["--hidden-x"] = "-50%"; style["--hidden-y"] = "-95%";
-    style["--shown-x"] = "-50%";  style["--shown-y"] = "-55%";
+    style["--hidden-x"] = `${-W / 2}px`;   style["--hidden-y"] = `${-H}px`;
+    style["--shown-x"]  = `${-W / 2}px`;   style["--shown-y"]  = `${-H * 0.55}px`;
   } else { // bottom
     style.bottom = 0; style.left = `${spot.pos}%`;
-    style["--hidden-x"] = "-50%"; style["--hidden-y"] = "95%";
-    style["--shown-x"] = "-50%";  style["--shown-y"] = "55%";
+    style["--hidden-x"] = `${-W / 2}px`;   style["--hidden-y"] = `${H}px`;
+    style["--shown-x"]  = `${-W / 2}px`;   style["--shown-y"]  = `${H * 0.55}px`;
   }
 
   return (
